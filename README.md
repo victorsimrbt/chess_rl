@@ -1,3 +1,3 @@
 # Chess RL
-My own applications of deep or basic reinforcement learning techniques in chess. 
+Keras application of deep-Q-learning for Chess environment
 
