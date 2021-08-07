@@ -1,0 +1,7 @@
+Prototype description
+
+proto1: Basic adapted Deep Q Learning Algorithm with my own Chess Environemnt.
+
+proto2: Additional features to Chess Environment. Cleaner program.
+
+proto3: Correcting Rewards System, fixing black and white correction.
