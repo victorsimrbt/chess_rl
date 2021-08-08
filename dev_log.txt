@@ -6,3 +6,8 @@ Looking at keras examples of Deep Q network. Testing adapting code by creating c
 
 Deep Q Learning functional. Sparse rewards might be problem. Q learning playing its own moves seems to be problematic.
 Need to create system of splitting rewards for white and black.
+
+08/08/2021
+
+Cleaner Coding. Rewards split for white and black. Planning on adding material counter system.
+
