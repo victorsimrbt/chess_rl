@@ -47,6 +47,5 @@ def checkmate_reward(board,move):
 def evaluate_reward(board,move,algorithms = [material_reward,checkmate_reward]):
     rewards = np.array([0,0])
     for algorithm in algorithms:
-        print(algorithm)
         rewards += algorithm(board,move)
     return rewards
