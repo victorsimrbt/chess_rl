@@ -93,6 +93,7 @@ class ChessEnv():
         self.state_history[turn].append(state)
         self.state_next_history[turn].append(state_next)
         self.done_history[turn].append(self.done)
+        self.episode_reward_history.append(rewards)
         
     def update_q_values(self):
         sides = ['white','black']

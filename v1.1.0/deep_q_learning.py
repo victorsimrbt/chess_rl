@@ -39,7 +39,7 @@ for _ in range(iterations):
             white_reward,black_reward = (np.mean(env.episode_reward_history['white']),
                                          np.mean(env.episode_reward_history['white']))
             template = "episode {}, frame count {}, white_reward {}, black_reward {}"
-            print(template.format(episode_count, frame_count))
+            print(template.format(episode_count, frame_count,white_reward,black_reward))
             
         env.episode_reward_history.append(episode_reward)
         if env.done:
