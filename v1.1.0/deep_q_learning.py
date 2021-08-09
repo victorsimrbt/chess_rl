@@ -36,7 +36,9 @@ for _ in range(iterations):
 
         if frame_count % update_target_network == 0:
             model_target.model.set_weights(model.model.get_weights())
-            template = "episode {}, frame count {}"
+            white_reward,black_reward = (np.mean(env.episode_reward_history['white']),
+                                         np.mean(env.episode_reward_history['white']))
+            template = "episode {}, frame count {}, white_reward {}, black_reward {}"
             print(template.format(episode_count, frame_count))
             
         env.episode_reward_history.append(episode_reward)
