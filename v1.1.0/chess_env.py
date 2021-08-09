@@ -3,6 +3,7 @@ import tensorflow as tf
 from variable_settings import *
 from board_conversion import *
 from q_network import *
+from rewards import * 
 
     
 model = Q_model()
@@ -77,14 +78,14 @@ class ChessEnv():
         reward = 0
         
         state = self.translate_board()
+        rewards = evaluate_reward(self.board,action)
+        self.rewards_history['white'].append(rewards[0])
+        self.rewards_history['black'].append(rewards[0])
         self.update_pgn(action)
         self.board.push(action)
         
         state_next = self.board
         state_next = translate_board(state_next)
-        
-        if self.board.is_checkmate():
-            reward = 100
 
         self.done = self.board.is_game_over()
 
@@ -92,8 +93,6 @@ class ChessEnv():
         self.state_history[turn].append(state)
         self.state_next_history[turn].append(state_next)
         self.done_history[turn].append(self.done)
-        self.rewards_history[turn].append(reward)
-        self.rewards_history[opp].append(-reward)
         
     def update_q_values(self):
         sides = ['white','black']
