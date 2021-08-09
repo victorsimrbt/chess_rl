@@ -11,3 +11,7 @@ Need to create system of splitting rewards for white and black.
 
 Cleaner Coding. Rewards split for white and black. Planning on adding material counter system.
 
+09/08/2021
+
+Reward Evaluation flexibility. Exporting newest versions to a new colab notebook for GPU usage.
+
