@@ -22,4 +22,4 @@ update_after_actions = 4
 update_target_network = 100
 loss_function = keras.losses.Huber()
 len_episodes = 0
-iterations = 1000
+iterations = 1000000

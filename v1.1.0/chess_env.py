@@ -71,11 +71,8 @@ class ChessEnv():
     def step(self,action):
         if self.board.turn:
             turn = 'white'
-            opp = 'black'
         else:
             turn = 'black'
-            opp = 'white'
-        reward = 0
         
         state = self.translate_board()
         rewards = evaluate_reward(self.board,action)

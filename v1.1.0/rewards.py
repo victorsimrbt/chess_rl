@@ -4,8 +4,8 @@ import chess
 from board_conversion import *
 import numpy as np
 
-material_weight = 100 
-checkmate_weight = 1000
+material_weight = 10000
+checkmate_weight = 1000000
 
 def boolean_subtract(lst, bool):
     if bool:
