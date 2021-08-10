@@ -111,7 +111,7 @@ class ChessEnv():
             
             future_rewards = model_target.model.predict(state_next_sample)
             
-            updated_qs = rewards_sample + gamma * tf.reduce_max(
+            updated_q = rewards_sample + gamma * tf.reduce_max(
                 future_rewards, axis=1
             )
 
