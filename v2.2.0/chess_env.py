@@ -74,10 +74,10 @@ class ChessEnv():
 
         self.done = self.board.is_game_over()
 
-        self.action_history[turn].append(move2num[action])
-        self.state_history[turn].append(state)
-        self.state_next_history[turn].append(state_next)
-        self.done_history[turn].append(self.done)
+        self.action_history.append(move2num[action])
+        self.state_history.append(state)
+        self.state_next_history.append(state_next)
+        self.done_history.append(self.done)
         self.episode_reward_history.append(rewards)
         
     def update_q_values(self):
@@ -86,15 +86,16 @@ class ChessEnv():
         masks = []
         updated_q_values = []
         for turn in sides:
+            print(self.done_history)
             indices = np.random.choice(range(len(self.done_history)), size=batch_size)
             #Not only the iterations that have been complete. Using done_history to measure len is arbitrary
                 
-            state_sample = np.array([self.state_history[turn][i] for i in indices])
-            state_next_sample = np.array([self.state_next_history[turn][i] for i in indices])
+            state_sample = np.array([self.state_history[i] for i in indices])
+            state_next_sample = np.array([self.state_next_history[i] for i in indices])
             rewards_sample = [self.rewards_history[turn][i] for i in indices]
-            action_sample = [self.action_history[turn][i] for i in indices]
+            action_sample = [self.action_history[i] for i in indices]
             done_sample = tf.convert_to_tensor(
-                [float(self.done_history[turn][i]) for i in indices]
+                [float(self.done_history[i]) for i in indices]
             )
             
             future_rewards = model_target.model.predict(state_next_sample)
