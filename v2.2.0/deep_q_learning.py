@@ -23,7 +23,6 @@ for _ in range(iterations):
         env.step(move)
         
         state_samples,masks,updated_q_values = env.update_q_values()
-        print(len(state_samples),len(masks),len(updated_q_values))
         for i in range(2):
             with tf.GradientTape() as tape:
                 q_values = model.model(state_samples.reshape(len(state_samples),8,8,12))
