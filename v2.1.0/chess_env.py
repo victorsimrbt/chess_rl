@@ -111,14 +111,14 @@ class ChessEnv():
             
             future_rewards = model_target.model.predict(state_next_sample)
             
-            updated_q_values = rewards_sample + gamma * tf.reduce_max(
+            updated_qs = rewards_sample + gamma * tf.reduce_max(
                 future_rewards, axis=1
             )
 
-            updated_q_values = updated_q_values * (1 - done_sample) - done_sample
-            masks = tf.one_hot(action_sample, num_actions)
+            updated_q = updated_q * (1 - done_sample) - done_sample
+            mask = tf.one_hot(action_sample, num_actions)
             
             state_samples.append(state_sample)
             masks.append(masks)
-            updated_q_values.append(updated_q_values)
+            updated_q_values.append(updated_q)
         return state_sample,masks,updated_q_values

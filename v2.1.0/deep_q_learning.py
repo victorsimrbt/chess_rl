@@ -21,18 +21,17 @@ for _ in range(iterations):
         epsilon = max(epsilon, epsilon_min)
         
         env.step(move)
+        
+        state_samples,masks,updated_q_values = env.update_q_values()
+        print(len(state_samples),len(masks),len(updated_q_values))
+        for i in range(2):
+            with tf.GradientTape() as tape:
+                q_values = model.model(state_samples.reshape(len(state_samples),8,8,12))
+                q_action = tf.reduce_sum(tf.multiply(q_values, masks[i]), axis=1)
+                loss = loss_function(updated_q_values[i], q_action)
 
-        if frame_count % update_after_actions == 0 and len(env.done_history) > batch_size:
-            state_samples,masks,updated_q_values = env.update_q_values()
-            
-            for i in range(len(state_samples)):
-                with tf.GradientTape() as tape:
-                    q_values = model.model(state_samples[i])
-                    q_action = tf.reduce_sum(tf.multiply(q_values, masks[i]), axis=1)
-                    loss = loss_function(updated_q_values[i], q_action)
-
-                grads = tape.gradient(loss, model.model.trainable_variables)
-                optimizer.apply_gradients(zip(grads, model.model.trainable_variables))
+            grads = tape.gradient(loss, model.model.trainable_variables)
+            optimizer.apply_gradients(zip(grads, model.model.trainable_variables))
 
         if frame_count % update_target_network == 0:
             model_target.model.set_weights(model.model.get_weights())
