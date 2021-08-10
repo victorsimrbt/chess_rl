@@ -119,6 +119,6 @@ class ChessEnv():
             mask = tf.one_hot(action_sample, num_actions)
             
             state_samples.append(state_sample)
-            masks.append(masks)
+            masks.append(mask)
             updated_q_values.append(updated_q)
         return state_sample,masks,updated_q_values
