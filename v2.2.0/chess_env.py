@@ -86,7 +86,6 @@ class ChessEnv():
         masks = []
         updated_q_values = []
         for turn in sides:
-            print(self.done_history)
             indices = np.random.choice(range(len(self.done_history)), size=batch_size)
             #Not only the iterations that have been complete. Using done_history to measure len is arbitrary
                 
