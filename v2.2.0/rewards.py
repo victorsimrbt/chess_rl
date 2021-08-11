@@ -44,7 +44,7 @@ def checkmate_reward(board,move):
         reward = reward_mask * 0
     return reward
 
-def evaluate_reward(board,move,algorithms = [material_reward,checkmate_reward]):
+def evaluate_reward(board,move,algorithms = [checkmate_reward]):
     rewards = np.array([0,0])
     for algorithm in algorithms:
         rewards += algorithm(board,move)

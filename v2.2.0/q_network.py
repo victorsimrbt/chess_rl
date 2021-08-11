@@ -5,7 +5,7 @@ import tensorflow as tf
 from board_conversion import *
 
 class Q_model():
-    def __init__(self):
+    def __init__(self,model = None):
         self.model = self.create_q_model()
 
     def create_q_model(self):
