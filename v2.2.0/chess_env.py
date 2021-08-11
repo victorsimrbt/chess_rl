@@ -35,13 +35,13 @@ class ChessEnv():
         self.move_counter = 1
         self.fast_counter = 0
         self.pgn = ''
-        for turn in self.rewards_history.keys():
-            if len(self.rewards_history[turn]) > max_memory_length:
-                del self.rewards_history[turn][:1]
-                del self.state_history[turn][:1]
-                del self.state_next_history[turn][:1]
-                del self.action_history[turn][:1]
-                del self.done_history[turn][:1]
+        if len(self.state_history) > max_memory_length:
+            del self.rewards_history['white'][:1]
+            del self.rewards_history['black'][:1]
+            del self.state_history[:1]
+            del self.state_next_history[:1]
+            del self.action_history[:1]
+            del self.done_history[:1]
 
         if len(self.pgns) > 1000:
           self.pgns.pop(-1)
