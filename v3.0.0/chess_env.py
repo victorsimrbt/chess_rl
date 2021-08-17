@@ -16,7 +16,7 @@ class ChessEnv():
         self.board = chess.Board()
         self.X = []
         self.y= []
-        self.loss_history = []
+        self.loss_history = [0]
         self.move_counter = 1
         self.fast_counter = 0
         self.pgn = ''
