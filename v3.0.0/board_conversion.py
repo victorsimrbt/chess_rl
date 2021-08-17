@@ -119,7 +119,6 @@ def convert_policy(board,policy):
     legal_moves = list(board.legal_moves)
     for i in range(len(legal_moves)):
         move = legal_moves[i]
-        from_square = move.from_square
-        to_square = move.to_square
-        new_policy[from_square][to_square] = policy[i]
+        num = move2num[move]
+        new_policy[num] = policy[i]
     return new_policy

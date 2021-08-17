@@ -62,14 +62,16 @@ class ChessEnv():
             return -1
         
     def execute_episode(self,model):
-        tree = MonteCarloTree(model,self.board)
-        self.positions.append(self.board)
         while True:
+            self.positions.append(self.board)
+            tree = MonteCarloTree(model,self.board)
+            
             final_v = tree.run_simulations()
             self.X.append(generate_input(self.positions)) 
             data_policy = convert_policy(self.board,tree.policy)
             self.y_p.append(data_policy)
             self.y_v.append(final_v)
+            
             a = choice(len(tree.policy), p=tree.policy)
             move = list(self.board.legal_moves)[a]# sample action from improved policy
             self.step(move)
