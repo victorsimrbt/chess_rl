@@ -1,3 +1,6 @@
+import os
+#os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
+import tensorflow as tf
 from variable_settings import *
 from chess_env import * 
 from q_network import *
@@ -13,4 +16,4 @@ for i in range(iterations):
     q_model = env.train_model(q_model)
     print('Episode:',str(i),
           'Loss:',env.loss_history[-1],
-          'Mean Loss:',np.mean(env.loss_history))
+          'Mean Loss:',np.mean(env.loss_history)) 

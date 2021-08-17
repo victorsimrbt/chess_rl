@@ -26,34 +26,32 @@ class Action():
         self.pred_states = []
         for parent_node in parent_nodes:
             self.pred_states.append(parent_node.board)
+            
+        self.pred_states = self.pred_states[:8]
+        # ! IF NOT CONVERGE COULD BE CAUSE! DATA IMBALANCE.
     def evaluate(self,model,Ns):
         self.P,self.V = model.predict(self.pred_states)
-        self.U = c_puct * self.P * np.sqrt(Ns)/(1+ self.N)
+        self.U = c_puct * self.P * (np.sqrt(Ns)/(1+ self.N))
         return self.U
 
 class Node:
-    def __init__(self,board,move):
+    def __init__(self,board,move,parents):
         self.board = board
         self.move = move
         self.child_nodes = []
-        self.parents = []
-        self.action = 0
+        self.parents = parents
+        self.states = np.append(np.array(parents),self) 
+        
+        self.action = Action(self.board,self.states)
         self.visit_count = 0
             
     def extend(self):
         if not(self.child_nodes):
             continuations,legal_moves = pos_cont(self.board)
+            new_parents = self.parents
+            new_parents.append(self)
             for i in range(len(continuations)):
-                self.child_nodes.append(Node(continuations[i],legal_moves[i]))
-        
-    def create_actions(self):
-        new_parents = self.parents
-        new_parents.append(self)
-        for child_node in self.child_nodes:
-            if not(child_node.action):
-                child_node.action = Action(child_node.board,new_parents)    
-            else:
-                pass
+                self.child_nodes.append(Node(continuations[i],legal_moves[i],new_parents))
             
 def evaluate_reward(board):
     if board.is_checkmate():
@@ -67,12 +65,12 @@ class MonteCarloTree():
             self.create_root_node(board)
         self.nodes = []
         self.prev_node = self.root_node
-        self.len_simulations = 100
+        self.len_simulations = 1
         self.chain = []
         self.model = model
 
     def create_root_node(self,board):
-        root_node = Node(board,None)
+        root_node = Node(board,None,[])
         self.root_node = root_node
         
     def simulate(self):
@@ -84,8 +82,7 @@ class MonteCarloTree():
             return evaluate_reward(self.prev_node.board)   
         
         self.prev_node.extend()
-        self.prev_node.create_actions()
-        # Extend and create actions only happen when not done before
+        #? Extend and only happen when not done before
         Us = []
         child_nodes = self.prev_node.child_nodes
         Ns = [child_node.action.N for child_node in child_nodes]
@@ -103,13 +100,13 @@ class MonteCarloTree():
     
     def run_simulations(self):   
         for i in range(self.len_simulations):
-            self.simulate()
+            final_v = self.simulate()
         first_gen = self.root_node.child_nodes
         Ns = [node.action.N for node in first_gen]
         self.policy = [np.power(N,(1/tau))/np.sum(Ns) for N in Ns]
         self.Vs = np.array([node.action.V for node in first_gen])
         top_node = first_gen[np.argmax(self.policy)]
         self.move = top_node.move
-        return self.move
+        return final_v
         
         

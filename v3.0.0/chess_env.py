@@ -15,7 +15,9 @@ class ChessEnv():
     def __init__(self):
         self.board = chess.Board()
         self.X = []
-        self.y= []
+        self.y_p= []
+        self.y_v= []
+        self.positions = []
         self.loss_history = [0]
         self.move_counter = 1
         self.fast_counter = 0
@@ -61,10 +63,13 @@ class ChessEnv():
         
     def execute_episode(self,model):
         tree = MonteCarloTree(model,self.board)
+        self.positions.append(self.board)
         while True:
-            tree.run_simulations()
-            self.X.append(self.translate_board()) 
-            self.y.append([tree.policy,tree.Vs])
+            final_v = tree.run_simulations()
+            self.X.append(generate_input(self.positions)) 
+            data_policy = convert_policy(self.board,tree.policy)
+            self.y_p.append(data_policy)
+            self.y_v.append(final_v)
             a = choice(len(tree.policy), p=tree.policy)
             move = list(self.board.legal_moves)[a]# sample action from improved policy
             self.step(move)
@@ -72,9 +77,14 @@ class ChessEnv():
             if self.board.is_game_over():
                 break
     
-    def train_model(self,q_model):
+    def train_model(self,q_model,epochs = 100):
         rep_model = q_model
-        history = rep_model.model.fit(self.X,self.y,loss= loss_function)
+        print('Training Model...')
+        self.X = np.asarray(self.X)
+        self.y_p = np.asarray(self.y_p)
+        self.y_v = np.asarray(self.y_v)
+        print(self.X.shape,self.y_p.shape,self.y_v.shape)
+        history = rep_model.model.fit(self.X,[self.y_p,self.y_v],epochs = epochs, verbose = 0)
         loss = history.history['loss']
         self.loss_history.append(min(loss))
         return rep_model
