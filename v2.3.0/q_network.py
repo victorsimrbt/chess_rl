@@ -6,7 +6,11 @@ from board_conversion import *
 
 class Q_model():
     def __init__(self,model = None):
-        self.model = self.create_q_model()
+        if model:
+            print('CUSTOM MODEL SET')
+            self.model = model
+        else:
+            self.model = self.create_q_model()
 
     def create_q_model(self):
     # Network defined by the Deepmind paper

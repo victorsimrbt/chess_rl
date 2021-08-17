@@ -15,3 +15,14 @@ Cleaner Coding. Rewards split for white and black. Planning on adding material c
 
 Reward Evaluation flexibility. Exporting newest versions to a new colab notebook for GPU usage.
 
+11/08/2021:
+
+Enact Negative Rewards for not winning, anti-draw measures. Considering adding stockfish to solve non-convergence. Investigate trainign process + debugging.
+
+14/08/2021:
+
+Decided To Not add Stockfish. Took long break from project. Considering advancing network architecture (ResNET). Monte Carlo Tree
+Use Value + Policy Network
+
+15/08/2021:
+Implementing features seen in alphago zero. Adding position memory to improve attention. 
