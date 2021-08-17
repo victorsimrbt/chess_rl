@@ -9,6 +9,7 @@ for _ in range(iterations):
     state = np.array(env.reset())
     episode_reward = 0
     len_episodes += 1
+    
     for timestep in range(1, max_steps_per_episode):
         frame_count += 1
 

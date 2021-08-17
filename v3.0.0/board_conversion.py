@@ -41,8 +41,31 @@ for from_sq in range(64):
         move2num[chess.Move(from_sq,to_sq)] = counter
         counter += 1
         
+def generate_side_matrix(board,side):
+    matrix = board_matrix(board)
+    translate = translate_board(board)
+    bools = np.array([piece.isupper() == side for piece in matrix])
+    bools = bools.reshape(8,8,1)
     
+    side_matrix = translate*bools
+    return np.array(side_matrix)
 
+def generate_input(positions,len_positions = 8):
+    board_rep = []
+    for position in positions:
+        black = generate_side_matrix(position,False)
+        white = generate_side_matrix(position,True)
+        board_rep.append(black)
+        board_rep.append(white)
+    turn = np.zeros((8,8,12))
+    turn.fill(int(position.turn))
+    board_rep.append(turn)
+    
+    while len(board_rep) < len_positions*2 + 1:
+        value = np.zeros((8,8,12))
+        board_rep.insert(0,value)
+    board_rep = np.array(board_rep)
+    return board_rep
 
 def translate_board(board): 
     pgn = board.epd()

@@ -66,11 +66,6 @@ def generate_input(positions,len_positions = 8):
         board_rep.insert(0,value)
     board_rep = np.array(board_rep)
     return board_rep
-    
-        
-input_matrix = generate_input([chess.Board()])
-    
-
 
 def translate_board(board): 
     pgn = board.epd()
