@@ -32,6 +32,7 @@ class Q_model():
         layer3 = residual_module(layer2, 64)
         flatten = Flatten()(layer3)
         p = Dense(4096,activation='softmax', name = 'p')(flatten)
+        # ? p = filter_legal_moves()
         v = Dense(1,activation = 'sigmoid', name = 'v')(flatten)
         
         model = Model(inputs=visible, outputs=[p,v])

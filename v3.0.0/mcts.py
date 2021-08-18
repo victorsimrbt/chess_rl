@@ -1,5 +1,6 @@
 import chess
 import numpy as np
+from board_conversion import *
 
 c_puct = 1
 tau = 1
@@ -14,7 +15,7 @@ def pos_cont(board):
     return boards,legal_moves
 
 class Action():
-    def __init__(self,state,parent_nodes):
+    def __init__(self,state,move,parent_nodes):
         self.N = 0
         self.W = 0
         self.Q = 0
@@ -22,6 +23,8 @@ class Action():
         self.U = 0
         self.V = 0
         self.state = state
+        if move:
+            self.move_idx = move2num[move]
         
         self.pred_states = []
         for parent_node in parent_nodes:
@@ -31,6 +34,8 @@ class Action():
         # ! IF NOT CONVERGE COULD BE CAUSE! DATA IMBALANCE.
     def evaluate(self,model,Ns):
         self.P,self.V = model.predict(self.pred_states)
+        if self.move_idx:
+            self.P = self.P[0][self.move_idx]
         self.U = c_puct * self.P * (np.sqrt(Ns)/(1+ self.N))
         QpU = self.U + self.Q
         return QpU
@@ -43,7 +48,7 @@ class Node:
         self.parents = parents
         self.states = np.append(np.array(parents),self) 
         
-        self.action = Action(self.board,self.states)
+        self.action = Action(self.board,self.move,self.states)
         self.visit_count = 0
             
     def extend(self):
@@ -77,6 +82,7 @@ class MonteCarloTree():
     def simulate(self):
         self.chain.append(self.prev_node)
         if self.prev_node.board.is_game_over():
+            print('TERMINAL STATE REACHED')
             reward = evaluate_reward(self.prev_node.board)
             for node in self.chain[1:]:
                 node.action.N += 1 
@@ -84,8 +90,12 @@ class MonteCarloTree():
                 node.action.Q = node.action.W/node.action.N
             return evaluate_reward(self.prev_node.board)   
         
-        self.prev_node.extend()
+        if not(self.prev_node.child_nodes):
+            self.prev_node.extend()
+            print('LEAF NODE REACHED')
+            return -self.prev_node.action.V
         #? Extend and only happen when not done before
+        
         QpUs = []
         child_nodes = self.prev_node.child_nodes
         Ns = [child_node.action.N for child_node in child_nodes]
@@ -95,15 +105,17 @@ class MonteCarloTree():
             next_node = child_nodes[np.argmax(QpUs)]
         self.prev_node = next_node
         v = self.simulate()
-        # ! If network does not converge, observe this unused variable v
         
-        next_node.action.Q = (next_node.action.N*next_node.action.Q +next_node.action.V)/(next_node.action.N+1)
+        next_node.action.Q = (next_node.action.N*next_node.action.Q +v)/(next_node.action.N+1)
         next_node.action.N += 1
-        return -next_node.action.V
+        print('Q VALUE UPDATED')
+        return -v
     
     def run_simulations(self):   
-        for i in range(self.len_simulations):
+        for _ in range(self.len_simulations):
+            print('EPISODE: '+str(_))
             final_v = self.simulate()
+            self.prev_node = self.root_node
         first_gen = self.root_node.child_nodes
         Ns = [node.action.N for node in first_gen]
         self.policy = [np.power(N,(1/tau))/np.sum(Ns) for N in Ns]
