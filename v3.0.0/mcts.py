@@ -32,7 +32,8 @@ class Action():
     def evaluate(self,model,Ns):
         self.P,self.V = model.predict(self.pred_states)
         self.U = c_puct * self.P * (np.sqrt(Ns)/(1+ self.N))
-        return self.U
+        QpU = self.U + self.Q
+        return QpU
 
 class Node:
     def __init__(self,board,move,parents):
@@ -78,18 +79,19 @@ class MonteCarloTree():
         if self.prev_node.board.is_game_over():
             reward = evaluate_reward(self.prev_node.board)
             for node in self.chain[1:]:
-                node.action.V += reward
+                node.action.N += 1 
+                node.action.W += reward
+                node.action.Q = node.action.W/node.action.N
             return evaluate_reward(self.prev_node.board)   
         
         self.prev_node.extend()
         #? Extend and only happen when not done before
-        Us = []
+        QpUs = []
         child_nodes = self.prev_node.child_nodes
         Ns = [child_node.action.N for child_node in child_nodes]
         for child_node in child_nodes:
-            U = child_node.action.evaluate(self.model,np.sum(Ns))
-            Us.append(U)
-        next_node = child_nodes[np.argmax(Us)]
+            QpU = child_node.action.evaluate(self.model,np.sum(Ns)) 
+        next_node = child_nodes[np.argmax(QpUs)]
         self.prev_node = next_node
         v = self.simulate()
         # ! If network does not converge, observe this unused variable v
