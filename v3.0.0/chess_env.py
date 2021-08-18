@@ -59,7 +59,7 @@ class ChessEnv():
         if self.board.is_checkmate():
             return 1
         else:
-            return -1
+            return 0
         
     def execute_episode(self,model):
         while True:
