@@ -91,7 +91,8 @@ class MonteCarloTree():
         Ns = [child_node.action.N for child_node in child_nodes]
         for child_node in child_nodes:
             QpU = child_node.action.evaluate(self.model,np.sum(Ns)) 
-        next_node = child_nodes[np.argmax(QpUs)]
+            QpUs.append(QpU)
+            next_node = child_nodes[np.argmax(QpUs)]
         self.prev_node = next_node
         v = self.simulate()
         # ! If network does not converge, observe this unused variable v
