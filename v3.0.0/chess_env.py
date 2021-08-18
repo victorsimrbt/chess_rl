@@ -63,8 +63,6 @@ class ChessEnv():
         
     def execute_episode(self,model):
         while True:
-            if self.board.is_game_over():
-                break
             self.positions = self.positions[-8:]
             self.positions.append(self.board)
             self.tree = MonteCarloTree(model,self.board)
@@ -79,16 +77,18 @@ class ChessEnv():
             move = list(self.board.legal_moves)[a]# sample action from improved policy
             self.step(move)
             print(move)
+            if self.board.is_game_over():
+                break
     
     def train_model(self,q_model,epochs = 100):
         rep_model = q_model
         print('Training Model...')
         print(self.X)
-        self.X = np.array(self.X).reshape(len(self.X),17,8,8,12)
-        self.y_p = np.array(self.y_p)
-        self.y_v = np.array(self.y_v).reshape(len(self.y_v),1)
-        print(self.X.shape,self.y_p.shape,self.y_v.shape)
-        history = rep_model.model.fit(self.X,[self.y_p,self.y_v],epochs = epochs, verbose = 0)
+        X = np.array(self.X).reshape(len(self.X),17,8,8,12)
+        y_p = np.array(self.y_p)
+        y_v = np.array(self.y_v).reshape(len(self.y_v),1)
+        print(X.shape,y_p.shape,y_v.shape)
+        history = rep_model.model.fit(X,[y_p,y_v],epochs = epochs, verbose = 0)
         loss = history.history['loss']
         self.loss_history.append(min(loss))
         return rep_model
