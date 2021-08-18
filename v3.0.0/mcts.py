@@ -92,7 +92,7 @@ class MonteCarloTree():
         next_node = child_nodes[np.argmax(Us)]
         self.prev_node = next_node
         v = self.simulate()
-        # If network does not converge, observe this unused variable v
+        # ! If network does not converge, observe this unused variable v
         
         next_node.action.Q = (next_node.action.N*next_node.action.Q +next_node.action.V)/(next_node.action.N+1)
         next_node.action.N += 1

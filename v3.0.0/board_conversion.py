@@ -65,6 +65,7 @@ def generate_input(positions,len_positions = 8):
         value = np.zeros((8,8,12))
         board_rep.insert(0,value)
     board_rep = np.array(board_rep)
+    board_rep = board_rep[-17:]
     return board_rep
 
 def translate_board(board): 

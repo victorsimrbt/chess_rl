@@ -17,3 +17,4 @@ for i in range(iterations):
     print('Episode:',str(i),
           'Loss:',env.loss_history[-1],
           'Mean Loss:',np.mean(env.loss_history)) 
+    env.reset()
