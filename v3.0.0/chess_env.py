@@ -76,14 +76,12 @@ class ChessEnv():
             a = choice(len(self.tree.policy), p=self.tree.policy)
             move = list(self.board.legal_moves)[a]# sample action from improved policy
             self.step(move)
-            print(move)
             if self.board.is_game_over():
                 break
     
     def train_model(self,q_model,epochs = 100):
         rep_model = q_model
         print('Training Model...')
-        print(self.X)
         X = np.array(self.X).reshape(len(self.X),17,8,8,12)
         y_p = np.array(self.y_p)
         y_v = np.array(self.y_v).reshape(len(self.y_v),1)
