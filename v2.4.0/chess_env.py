@@ -102,8 +102,7 @@ class ChessEnv():
             updated_q = rewards_sample + gamma * tf.reduce_max(
                 future_rewards, axis=1
             )
-
-            updated_q = updated_q * (1 - done_sample) - done_sample
+            
             mask = tf.one_hot(action_sample, num_actions)
             
             state_samples.append(state_sample)

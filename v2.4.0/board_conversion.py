@@ -40,9 +40,6 @@ for from_sq in range(64):
         num2move[counter] = chess.Move(from_sq,to_sq)
         move2num[chess.Move(from_sq,to_sq)] = counter
         counter += 1
-        
-    
-
 
 def translate_board(board): 
     pgn = board.epd()
