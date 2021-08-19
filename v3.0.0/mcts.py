@@ -47,7 +47,6 @@ class Node:
         self.child_nodes = []
         self.parents = parents
         self.states = np.append(np.array(parents),self) 
-        
         self.action = Action(self.board,self.move,self.states)
         self.visit_count = 0
             
@@ -66,23 +65,25 @@ def evaluate_reward(board):
         return -1
 
 class MonteCarloTree():
-    def __init__(self,model,board = None):
-        if board:
-            self.create_root_node(board)
+    def __init__(self,model,board,parents):
+        self.create_root_node(board,parents)
         self.nodes = []
         self.prev_node = self.root_node
         self.len_simulations = 100
         self.chain = []
         self.model = model
 
-    def create_root_node(self,board):
-        root_node = Node(board,None,[])
+    def create_root_node(self,board,parents):
+        root_parents = []
+        for position in parents:
+            node = Node(position,None,[])
+            root_parents.append(node)
+        root_node = Node(board,None,root_parents)
         self.root_node = root_node
         
     def simulate(self):
         self.chain.append(self.prev_node)
         if self.prev_node.board.is_game_over():
-            print('TERMINAL STATE REACHED')
             reward = evaluate_reward(self.prev_node.board)
             for node in self.chain[1:]:
                 node.action.N += 1 
@@ -92,7 +93,6 @@ class MonteCarloTree():
         
         if not(self.prev_node.child_nodes):
             self.prev_node.extend()
-            print('LEAF NODE REACHED')
             return -self.prev_node.action.V
         #? Extend and only happen when not done before
         
@@ -108,12 +108,11 @@ class MonteCarloTree():
         
         next_node.action.Q = (next_node.action.N*next_node.action.Q +v)/(next_node.action.N+1)
         next_node.action.N += 1
-        print('Q VALUE UPDATED')
         return -v
     
     def run_simulations(self):   
         for _ in range(self.len_simulations):
-            print('EPISODE: '+str(_))
+            #print('EPISODE: '+str(_))
             final_v = self.simulate()
             self.prev_node = self.root_node
         first_gen = self.root_node.child_nodes

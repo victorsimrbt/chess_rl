@@ -65,7 +65,8 @@ class ChessEnv():
         while True:
             self.positions = self.positions[-8:]
             self.positions.append(self.board)
-            self.tree = MonteCarloTree(model,self.board)
+            self.tree = MonteCarloTree(model,self.board,self.positions)
+            # ! MUST GIVE PREVIOUS POSITIONS TO THE MONTE CARLO TREE!
             
             final_v = self.tree.run_simulations()
             self.X.append(generate_input(self.positions)) 
