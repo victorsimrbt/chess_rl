@@ -3,7 +3,7 @@ from keras.layers import Input
 from keras.layers import Activation
 from keras.layers import Conv2D, Dense
 from keras.layers import add, BatchNormalization, Flatten
-from keras.losses import CategoricalCrossentropy,BinaryCrossentropy
+from keras.losses import CategoricalCrossentropy,MeanSquaredError
 import tensorflow as tf
 from board_conversion import *
 from variable_settings import *
@@ -33,12 +33,12 @@ class Q_model():
         layer3 = residual_module(layer2, 64)
         flatten = Flatten()(layer3)
         p = Dense(4096,activation='softmax', name = 'p')(flatten)
-        v = Dense(1,activation = 'sigmoid', name = 'v')(flatten)
+        v = Dense(1,activation = 'tanh', name = 'v')(flatten)
         
         model = Model(inputs=visible, outputs=[p,v])
         
         model.compile(optimizer = optimizer, loss = {'p':CategoricalCrossentropy(),
-                                                     'v':BinaryCrossentropy()})
+                                                     'v':MeanSquaredError()})
         return model
     
     def predict(self,position_memory):

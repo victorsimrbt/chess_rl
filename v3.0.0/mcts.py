@@ -121,6 +121,4 @@ class MonteCarloTree():
         self.Vs = np.array([node.action.V for node in first_gen])
         top_node = first_gen[np.argmax(self.policy)]
         self.move = top_node.move
-        return final_v
-        
         

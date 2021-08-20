@@ -62,23 +62,42 @@ class ChessEnv():
             return 0
         
     def execute_episode(self,model):
+        episode_X = []
+        episode_y_p = []
+        episode_y_v = []
+        v_replacements = {
+            True : 0,
+            False : 0
+        }
+        
         while True:
             self.positions = self.positions[-8:]
             self.positions.append(self.board)
             self.tree = MonteCarloTree(model,self.board,self.positions)
             # ! MUST GIVE PREVIOUS POSITIONS TO THE MONTE CARLO TREE!
             
-            final_v = self.tree.run_simulations()
-            self.X.append(generate_input(self.positions)) 
+            self.tree.run_simulations()
+            episode_X.append(generate_input(self.positions)) 
             data_policy = convert_policy(self.board,self.tree.policy)
-            self.y_p.append(data_policy)
-            self.y_v.append(final_v)
+            episode_y_p.append(data_policy)
+            episode_y_v.append(self.board.turn)
             
             a = choice(len(self.tree.policy), p=self.tree.policy)
             move = list(self.board.legal_moves)[a]# sample action from improved policy
             self.step(move)
+            
             if self.board.is_game_over():
+                outcome = self.board.result()
+                results = np.array(outcome.split('-')).astype(int)
+                v_replacements[True] = results[0]
+                v_replacements[False] = results[-1]
                 break
+        
+        episode_y_v = [v_replacements[boolean] for boolean in episode_y_v]
+        
+        self.X += episode_X
+        self.y_p += episode_y_p
+        self.y_v += episode_y_v
     
     def train_model(self,q_model,epochs = 100):
         rep_model = q_model
