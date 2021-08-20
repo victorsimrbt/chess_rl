@@ -29,8 +29,8 @@ class Q_model():
 
         visible = Input(shape=(17,8, 8,12))
         layer1 = residual_module(visible, 64)
-        layer2 = residual_module(layer1, 128)
-        layer3 = residual_module(layer2, 256)
+        layer2 = residual_module(layer1, 64)
+        layer3 = residual_module(layer2, 64)
         flatten = Flatten()(layer3)
         p = Dense(4096,activation='softmax', name = 'p')(flatten)
         v = Dense(1,activation = 'sigmoid', name = 'v')(flatten)
