@@ -69,7 +69,7 @@ class MonteCarloTree():
         self.create_root_node(board,parents)
         self.nodes = []
         self.prev_node = self.root_node
-        self.len_simulations = 100
+        self.len_simulations = 5
         self.chain = []
         self.model = model
 

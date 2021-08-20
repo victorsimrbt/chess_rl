@@ -3,7 +3,7 @@ from keras.layers import Input
 from keras.layers import Activation
 from keras.layers import Conv2D, Dense
 from keras.layers import add, BatchNormalization, Flatten
-from keras.losses import CategoricalCrossentropy,BinaryCrossentropy
+from keras.losses import SparseCategoricalCrossentropy,BinaryCrossentropy
 import tensorflow as tf
 from board_conversion import *
 from variable_settings import *
@@ -37,7 +37,7 @@ class Q_model():
         
         model = Model(inputs=visible, outputs=[p,v])
         
-        model.compile(optimizer = optimizer, loss = {'p':CategoricalCrossentropy(),
+        model.compile(optimizer = optimizer, loss = {'p':SparseCategoricalCrossentropy(),
                                                      'v':BinaryCrossentropy()})
         return model
     
