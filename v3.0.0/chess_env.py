@@ -88,9 +88,13 @@ class ChessEnv():
             
             if self.board.is_game_over():
                 outcome = self.board.result()
-                results = np.array(outcome.split('-')).astype(int)
-                v_replacements[True] = results[0]
-                v_replacements[False] = results[-1]
+                try:
+                    results = np.array(outcome.split('-')).astype(int)
+                    v_replacements[True] = results[0]
+                    v_replacements[False] = results[-1]
+                except:
+                    v_replacements[True] = 0.5
+                    v_replacements[False] = 0.5
                 break
         
         episode_y_v = [v_replacements[boolean] for boolean in episode_y_v]
