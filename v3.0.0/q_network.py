@@ -32,7 +32,7 @@ class Q_model():
         layer2 = residual_module(layer1, 64)
         layer3 = residual_module(layer2, 64)
         flatten = Flatten()(layer3)
-        p = Dense(len(num2move.values),activation='softmax', name = 'p')(flatten)
+        p = Dense(len(num2move.values()),activation='softmax', name = 'p')(flatten)
         v = Dense(1,activation = 'tanh', name = 'v')(flatten)
         
         model = Model(inputs=visible, outputs=[p,v])
