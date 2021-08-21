@@ -98,6 +98,10 @@ class ChessEnv():
         self.X += episode_X
         self.y_p += episode_y_p
         self.y_v += episode_y_v
+        
+        # ! Errors that can be caused during training will prevent the collection of data, as the whole execution
+        # ! Must've been fully executed (to terminal state) before the code to collect data will run
+        # ! Line of action: Fix Error + Add promotion.
     
     def train_model(self,q_model,epochs = 100):
         rep_model = q_model

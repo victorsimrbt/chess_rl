@@ -32,6 +32,31 @@ value_dict = {
     '.': [0, 0]
 }
 
+pos_promo = ['q','r','b','n']
+columns = ['a','b','c','d','e','f','g','h']
+sides = [7,2]
+increments = [1,-1]
+
+promo_moves = []
+ucis = []
+for side in sides:
+    increment = increments[sides.index(side)]
+    for i in range(len(columns)):
+        current_col = columns[i]
+        pos_end_squares = [current_col]
+        if i-1 >= 0:
+            pos_end_squares.append(columns[i-1])
+        if i+1 < len(columns):
+            pos_end_squares.append(columns[i+1])
+            
+        pos_end_squares = [pos+str(side)for pos in pos_end_squares]
+        for promo in pos_promo:
+            for end_square in pos_end_squares:
+                uci = end_square+current_col+str(side+increment)+promo
+                ucis.append(uci)
+                move = chess.Move.from_uci(uci)
+                promo_moves.append(move)
+
 num2move = {}
 move2num = {}
 counter = 0
@@ -40,6 +65,10 @@ for from_sq in range(64):
         num2move[counter] = chess.Move(from_sq,to_sq)
         move2num[chess.Move(from_sq,to_sq)] = counter
         counter += 1
+for move in promo_moves:
+    num2move[counter] = move
+    move2num[move] = counter
+    counter += 1
         
 def generate_side_matrix(board,side):
     matrix = board_matrix(board)
