@@ -49,7 +49,7 @@ class Q_model():
         return p,v
     
     def explore(self,env):
-        action_space = np.random.randn(len(num2move.values))
+        action_space = np.random.randn(len(num2move.values()))
         action_space = filter_legal_moves(env.board,action_space)
         action = np.argmax(action_space, axis=None)
         move= num2move[action]
