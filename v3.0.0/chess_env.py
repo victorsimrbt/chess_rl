@@ -98,7 +98,7 @@ class ChessEnv():
                     v_replacements[False] = int_result[1]
                 break
         
-        episode_y_v = (v_replacements[boolean] for boolean in episode_y_v)
+        episode_y_v = [v_replacements[boolean] for boolean in episode_y_v]
         
         self.X += episode_X
         self.y_p += episode_y_p
