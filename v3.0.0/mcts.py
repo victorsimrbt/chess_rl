@@ -116,7 +116,7 @@ class MonteCarloTree():
             final_v = self.simulate()
             self.prev_node = self.root_node
         first_gen = self.root_node.child_nodes
-        Ns = (node.action.N for node in first_gen)
+        Ns = [node.action.N for node in first_gen]
         self.policy = [np.power(N,(1/tau))/np.sum(Ns) for N in Ns]
         self.Vs = np.array([node.action.V for node in first_gen])
         top_node = first_gen[np.argmax(self.policy)]
