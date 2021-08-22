@@ -33,7 +33,7 @@ class Q_model():
         layer2 = residual_module(maxpool1, 128)
         maxpool2 = MaxPooling3D()(layer2)
         layer3 = residual_module(maxpool2, 256)
-        maxpool2 = MaxPooling3D()(layer2)
+        maxpool2 = MaxPooling3D()(layer3)
         layer4 = residual_module(maxpool2, 512)
         flatten = Flatten()(layer4)
 
