@@ -18,7 +18,7 @@ class ChessEnv():
         self.y_p= []
         self.y_v= []
         self.positions = []
-        self.loss_history = [0]
+        self.loss_history = []
         self.move_counter = 1
         self.fast_counter = 0
         self.pgn = ''
@@ -87,25 +87,24 @@ class ChessEnv():
             self.step(move)
             
             if self.board.is_game_over():
-                outcome = self.board.result()
-                try:
-                    results = np.array(outcome.split('-')).astype(int)
-                    v_replacements[True] = results[0]
-                    v_replacements[False] = results[-1]
-                except:
+                self.outcome = self.board.result()
+                results = np.array(self.outcome.split('-'))
+                if '1/2' in results:
                     v_replacements[True] = 0.5
                     v_replacements[False] = 0.5
+                else:
+                    int_result = results.astype(int)
+                    v_replacements[True] = int_result[0]
+                    v_replacements[False] = int_result[1]
                 break
         
-        episode_y_v = [v_replacements[boolean] for boolean in episode_y_v]
+        episode_y_v = (v_replacements[boolean] for boolean in episode_y_v)
         
         self.X += episode_X
         self.y_p += episode_y_p
         self.y_v += episode_y_v
         
-        # ! Errors that can be caused during training will prevent the collection of data, as the whole execution
-        # ! Must've been fully executed (to terminal state) before the code to collect data will run
-        # ! Line of action: Fix Error + Add promotion.
+        return self.outcome
     
     def train_model(self,q_model,epochs = 100):
         rep_model = q_model

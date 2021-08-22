@@ -12,10 +12,11 @@ q_model = Q_model()
 examples = []
 
 for i in range(iterations):
-    env.execute_episode(q_model)
+    outcome = env.execute_episode(q_model)
     q_model = env.train_model(q_model)
     print('Episode:',str(i),
           'Loss:',env.loss_history[-1],
-          'Mean Loss:',np.mean(env.loss_history)) 
+          'Mean Loss:',np.mean(env.loss_history),
+          'Outcome:',outcome) 
  
     env.reset()

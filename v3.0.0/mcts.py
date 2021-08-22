@@ -98,7 +98,7 @@ class MonteCarloTree():
         
         QpUs = []
         child_nodes = self.prev_node.child_nodes
-        Ns = [child_node.action.N for child_node in child_nodes]
+        Ns = (child_node.action.N for child_node in child_nodes)
         for child_node in child_nodes:
             QpU = child_node.action.evaluate(self.model,np.sum(Ns)) 
             QpUs.append(QpU)
@@ -116,8 +116,8 @@ class MonteCarloTree():
             final_v = self.simulate()
             self.prev_node = self.root_node
         first_gen = self.root_node.child_nodes
-        Ns = [node.action.N for node in first_gen]
-        self.policy = [np.power(N,(1/tau))/np.sum(Ns) for N in Ns]
+        Ns = (node.action.N for node in first_gen)
+        self.policy = (np.power(N,(1/tau))/np.sum(Ns) for N in Ns)
         self.Vs = np.array([node.action.V for node in first_gen])
         top_node = first_gen[np.argmax(self.policy)]
         self.move = top_node.move
