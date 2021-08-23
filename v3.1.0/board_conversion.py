@@ -51,7 +51,7 @@ for from_sq in range(64):
         num2move.append(chess.Move(from_sq,to_sq))
         counter += 1
 for move in promo_moves:
-    num2move[counter] = move
+    num2move.append(move)
     counter += 1
         
 def generate_side_matrix(board,side):

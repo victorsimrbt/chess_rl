@@ -38,7 +38,7 @@ class Q_model():
         flatten = Flatten()(layer4)
 
         pre_v = Dense(256)(flatten)
-        p = Dense(len(num2move.values()),activation='softmax', name = 'p')(flatten)
+        p = Dense(len(num2move),activation='softmax', name = 'p')(flatten)
         v = Dense(1,activation = 'tanh', name = 'v')(pre_v)
 
         model = Model(inputs=visible, outputs=[p,v])
