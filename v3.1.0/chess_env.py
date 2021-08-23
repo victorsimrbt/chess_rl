@@ -100,7 +100,7 @@ class ChessEnv():
         self.y_p += episode_y_p
         self.y_v += episode_y_v
         
-        return self.outcome
+        self.board.result()
     
     def train_model(self,q_model,epochs = 100):
         rep_model = q_model

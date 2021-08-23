@@ -116,7 +116,8 @@ class MonteCarloTree():
             self.prev_node = self.root_node
         first_gen = self.root_node.child_nodes
         Ns = [node.action.N for node in first_gen]
-        self.policy = [np.power(N,(1/tau))/np.sum(Ns) for N in Ns]
+        self.policy = [N/np.sum(Ns) for N in Ns]
+        print(np.where(self.policy != 0))
         top_node = first_gen[np.argmax(self.policy)]
         self.move = top_node.move
         
