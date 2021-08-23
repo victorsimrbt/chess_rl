@@ -102,6 +102,7 @@ class MonteCarloTree():
             QpU = child_node.action.evaluate(self.model,np.sum(Ns)) 
             QpUs.append(QpU)
             next_node = child_nodes[np.argmax(QpUs)]
+            print(QpUs)
         self.prev_node = next_node
         v = self.simulate()
         
