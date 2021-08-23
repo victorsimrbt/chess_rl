@@ -129,7 +129,7 @@ def filter_legal_moves(board,logits):
     return new_logits
 
 def convert_policy(board,policy):
-    new_policy = np.zeros(len(num2move.values()))
+    new_policy = np.zeros(len(num2move))
     legal_moves = list(board.legal_moves)
     for i in range(len(legal_moves)):
         move = legal_moves[i]
