@@ -16,22 +16,6 @@ chess_dict = {
     '.' : [0,0,0,0,0,0,0,0,0,0,0,0],
 }
 
-value_dict = {
-    'p': [1, 0],
-    'P': [0, 1],
-    'n': [3, 0],
-    'N': [0, 3],
-    'b': [3, 0],
-    'B': [0, 3],
-    'r': [5, 0],
-    'R': [0, 5],
-    'q': [9, 0],
-    'Q': [0, 9],
-    'k': [0, 0],
-    'K': [0, 0],
-    '.': [0, 0]
-}
-
 pos_promo = ['q','r','b','n']
 columns = ['a','b','c','d','e','f','g','h']
 sides = [7,2]
@@ -56,18 +40,18 @@ for side in sides:
                 ucis.append(uci)
                 move = chess.Move.from_uci(uci)
                 promo_moves.append(move)
+                
+# ! Replace num2move as list and remove move2num
 
-num2move = {}
-move2num = {}
+num2move = []
+
 counter = 0
 for from_sq in range(64):
     for to_sq in range(64):
-        num2move[counter] = chess.Move(from_sq,to_sq)
-        move2num[chess.Move(from_sq,to_sq)] = counter
+        num2move.append(chess.Move(from_sq,to_sq))
         counter += 1
 for move in promo_moves:
     num2move[counter] = move
-    move2num[move] = counter
     counter += 1
         
 def generate_side_matrix(board,side):
@@ -139,7 +123,7 @@ def filter_legal_moves(board,logits):
     for legal_move in legal_moves:
         from_square = legal_move.from_square
         to_square = legal_move.to_square
-        idx = move2num[chess.Move(from_square,to_square)]
+        idx = num2move.index(chess.Move(from_square,to_square))
         filter_mask[idx] = 1
     new_logits = logits*filter_mask
     return new_logits
@@ -149,6 +133,6 @@ def convert_policy(board,policy):
     legal_moves = list(board.legal_moves)
     for i in range(len(legal_moves)):
         move = legal_moves[i]
-        num = move2num[move]
+        num = num2move.index(move)
         new_policy[num] = policy[i]
     return new_policy

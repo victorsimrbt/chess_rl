@@ -24,7 +24,7 @@ class Action():
         self.V = 0
         self.state = state
         if move:
-            self.move_idx = move2num[move]
+            self.move_idx = num2move.index(move)
         
         self.pred_states = []
         for parent_node in parent_nodes:
