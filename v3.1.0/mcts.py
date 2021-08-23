@@ -109,8 +109,8 @@ class MonteCarloTree():
         next_node.action.N += 1
         return -v
     
-    def run_simulations(self,len_simulations = 100):   
-        for _ in range(len_simulations):
+    def run_simulations(self,simulations = 100):   
+        for _ in range(simulations):
             #print('EPISODE: '+str(_))
             self.simulate()
             self.prev_node = self.root_node
