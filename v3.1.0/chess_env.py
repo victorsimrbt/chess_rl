@@ -66,7 +66,7 @@ class ChessEnv():
         }
         counter = 0
         
-        while True and counter > 100:
+        while True and counter < 100:
             counter += 1
             self.positions = self.positions[-8:]
             self.positions.append(self.board)
