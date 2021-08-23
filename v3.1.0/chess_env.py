@@ -6,11 +6,6 @@ from q_network import *
 from rewards import * 
 from mcts import *
 from numpy.random import choice
-
-    
-model = Q_model()
-model_target = Q_model()
-
 class ChessEnv():
     def __init__(self):
         self.board = chess.Board()
@@ -61,7 +56,7 @@ class ChessEnv():
         else:
             return 0
         
-    def execute_episode(self,model):
+    def execute_episode(self,model,simulations = 100):
         episode_X = []
         episode_y_p = []
         episode_y_v = []
@@ -69,14 +64,15 @@ class ChessEnv():
             True : 0,
             False : 0
         }
+        counter = 0
         
-        while True:
+        while True and counter > 100:
+            counter += 1
             self.positions = self.positions[-8:]
             self.positions.append(self.board)
             self.tree = MonteCarloTree(model,self.board,self.positions)
-            # ! MUST GIVE PREVIOUS POSITIONS TO THE MONTE CARLO TREE!
             
-            self.tree.run_simulations()
+            self.tree.run_simulations(simulations = simulations)
             episode_X.append(generate_input(self.positions)) 
             data_policy = convert_policy(self.board,self.tree.policy)
             episode_y_p.append(data_policy)
@@ -113,7 +109,7 @@ class ChessEnv():
         y_p = np.array(self.y_p)
         y_v = np.array(self.y_v).reshape(len(self.y_v),1)
         print(X.shape,y_p.shape,y_v.shape)
-        history = rep_model.model.fit(X,[y_p,y_v],epochs = epochs, verbose = 0)
+        history = rep_model.model.fit(X,[y_p,y_v],epochs = epochs, verbose = 1)
         loss = history.history['loss']
         self.loss_history.append(min(loss))
         return rep_model

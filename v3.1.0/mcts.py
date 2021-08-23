@@ -69,7 +69,6 @@ class MonteCarloTree():
         self.create_root_node(board,parents)
         self.nodes = []
         self.prev_node = self.root_node
-        self.len_simulations = 5
         self.chain = []
         self.model = model
 
@@ -110,15 +109,14 @@ class MonteCarloTree():
         next_node.action.N += 1
         return -v
     
-    def run_simulations(self):   
-        for _ in range(self.len_simulations):
+    def run_simulations(self,len_simulations = 100):   
+        for _ in range(len_simulations):
             #print('EPISODE: '+str(_))
             self.simulate()
             self.prev_node = self.root_node
         first_gen = self.root_node.child_nodes
         Ns = [node.action.N for node in first_gen]
         self.policy = [np.power(N,(1/tau))/np.sum(Ns) for N in Ns]
-        self.Vs = np.array([node.action.V for node in first_gen])
         top_node = first_gen[np.argmax(self.policy)]
         self.move = top_node.move
         
