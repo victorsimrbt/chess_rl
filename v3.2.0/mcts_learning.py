@@ -4,7 +4,6 @@ import tensorflow as tf
 from chess_env import * 
 from q_network import *
 from mcts import *
-import random
 
 env = ChessEnv()
 q_model = Q_model()

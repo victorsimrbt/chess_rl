@@ -64,10 +64,12 @@ class ChessEnv():
             True : 0,
             False : 0
         }
-        counter = 0
+        move_counter = 0
         
-        while True and counter < 100:
-            counter += 1
+        while True:
+            move_counter += 1
+            if move_counter % 10:
+                print('Move:',str(move_counter))
             self.positions = self.positions[-8:]
             self.positions.append(self.board)
             self.tree = MonteCarloTree(model,self.board,self.positions)
@@ -109,7 +111,7 @@ class ChessEnv():
         y_p = np.array(self.y_p)
         y_v = np.array(self.y_v).reshape(len(self.y_v),1)
         print(X.shape,y_p.shape,y_v.shape)
-        history = rep_model.model.fit(X,[y_p,y_v],epochs = epochs, verbose = 1)
+        history = rep_model.model.fit(X,[y_p,y_v],epochs = epochs, verbose = 0)
         loss = history.history['loss']
         self.loss_history.append(min(loss))
         return rep_model
