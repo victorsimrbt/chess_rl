@@ -1,5 +1,6 @@
 import chess
 import numpy as np
+from IPython.display import clear_output
 from board_conversion import *
 
 c_puct = 4
@@ -109,7 +110,6 @@ class MonteCarloTree():
         next_node = child_nodes[np.argmax(QpUs)]
         self.prev_node = next_node
         print('Action Calculated')
-        print(self.prev_node.board)
         v = self.simulate()
         
         next_node.action.Q = (next_node.action.N*next_node.action.Q +v)/(next_node.action.N+1)
@@ -121,6 +121,7 @@ class MonteCarloTree():
         for _ in range(simulations):
             print('EPISODE: '+str(_))
             self.simulate()
+        clear_output()
         first_gen = self.root_node.child_nodes
         Ns = [node.action.N for node in first_gen]
         self.policy = [N/np.sum(Ns) for N in Ns]
