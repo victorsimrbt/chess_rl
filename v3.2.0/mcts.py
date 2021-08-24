@@ -79,11 +79,11 @@ class MonteCarloTree():
         self.root_node = root_node
         
     def simulate(self):
-        print('Simulation Started')
+        #print('Simulation Started')
         self.chain.append(self.prev_node)
-        print(self.prev_node.board)
+        #print(self.prev_node.board)
         if self.prev_node.board.is_game_over():#
-            print('Terminal State Reached')
+            #print('Terminal State Reached')
             reward = evaluate_reward(self.prev_node.board)
             for node in self.chain[1:]:
                 node.action.N += 1 
@@ -94,7 +94,7 @@ class MonteCarloTree():
         
         if not(self.prev_node.child_nodes):
             self.prev_node.extend()
-            print('Leaf Node Reached')
+            #print('Leaf Node Reached')
             self.prev_node.action.N += 1
             return -self.prev_node.action.V
         #? Extend and only happen when not done before
@@ -108,12 +108,12 @@ class MonteCarloTree():
             QpUs.append(QpU)
         next_node = child_nodes[np.argmax(QpUs)]
         self.prev_node = next_node
-        print('Action Calculated')
+        #print('Action Calculated')
         v = self.simulate()
         
         next_node.action.Q = (next_node.action.N*next_node.action.Q +v)/(next_node.action.N+1)
         next_node.action.N += 1
-        print('Visits Corrected')
+        #print('Visits Corrected')
         return -v
     
     def run_simulations(self,simulations = 100):   

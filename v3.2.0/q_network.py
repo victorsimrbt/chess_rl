@@ -46,7 +46,6 @@ class Q_model():
         model.compile(optimizer = optimizer, loss = {'p':CategoricalCrossentropy(),
                                                      'v':MeanSquaredError()})
         return model
-        return model
     
     def predict(self,position_memory):
         input_values = generate_input(position_memory)
