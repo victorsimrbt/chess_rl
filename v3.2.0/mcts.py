@@ -4,7 +4,6 @@ from IPython.display import clear_output
 from board_conversion import *
 
 c_puct = 4
-tau = 1
 
 def pos_cont(board):
     boards = []
