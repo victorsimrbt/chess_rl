@@ -27,20 +27,14 @@ class Q_model():
             layer_out = Activation('relu')(layer_out)
             return layer_out
 
-        visible = Input(shape=(17,8,8,12))
+        visible = Input(shape=(17,8, 8,12))
         layer1 = residual_module(visible, 64)
-        maxpool1 = MaxPooling3D()(layer1)
-        layer2 = residual_module(maxpool1, 128)
-        maxpool2 = MaxPooling3D()(layer2)
-        layer3 = residual_module(maxpool2, 256)
-        maxpool2 = MaxPooling3D()(layer3)
-        layer4 = residual_module(maxpool2, 512)
-        flatten = Flatten()(layer4)
-
-        pre_v = Dense(256)(flatten)
-        p = Dense(len(num2move),activation='softmax', name = 'p')(flatten)
-        v = Dense(1,activation = 'tanh', name = 'v')(pre_v)
-
+        layer2 = residual_module(layer1, 64)
+        layer3 = residual_module(layer2, 64)
+        flatten = Flatten()(layer3)
+        p = Dense(len(num2move.values()),activation='softmax', name = 'p')(flatten)
+        v = Dense(1,activation = 'tanh', name = 'v')(flatten)
+        
         model = Model(inputs=visible, outputs=[p,v])
         
         model.compile(optimizer = optimizer, loss = {'p':CategoricalCrossentropy(),
