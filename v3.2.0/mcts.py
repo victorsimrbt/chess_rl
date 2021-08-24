@@ -19,8 +19,8 @@ class Action():
         self.N = 0
         self.W = 0
         self.Q = 0
-        self.P = None
-        self.U = None
+        self.P = 0
+        self.U = 0
         self.V = 0
         self.state = state
         if move:
@@ -32,13 +32,11 @@ class Action():
             
         self.pred_states = self.pred_states[:8]
         # ! IF NOT CONVERGE COULD BE CAUSE! DATA IMBALANCE.
-    def evaluate(self,model,Ns):
-        if not(self.P) and not(self.V): 
-            self.P,self.V = model.predict(self.pred_states)
-            if self.move_idx:
-                self.P = self.P[0][self.move_idx]
+    def evaluate(self,P,Ns):
+        self.P = P[0][self.move_idx]
         self.U = c_puct * self.P * (np.sqrt(Ns)/(1+ self.N))
         QpU = self.U + self.Q 
+        return QpU
 
 class Node:
     def __init__(self,board,move,parents):
@@ -81,39 +79,48 @@ class MonteCarloTree():
         self.root_node = root_node
         
     def simulate(self):
+        print('Simulation Started')
         self.chain.append(self.prev_node)
-        if self.prev_node.board.is_game_over():
+        print(self.prev_node.board)
+        if self.prev_node.board.is_game_over():#
+            print('Terminal State Reached')
             reward = evaluate_reward(self.prev_node.board)
             for node in self.chain[1:]:
                 node.action.N += 1 
                 node.action.W += reward
                 node.action.Q = node.action.W/node.action.N
+            self.prev_node = self.root_node
             return evaluate_reward(self.prev_node.board)   
         
         if not(self.prev_node.child_nodes):
             self.prev_node.extend()
+            print('Leaf Node Reached')
+            self.prev_node.action.N += 1
             return -self.prev_node.action.V
         #? Extend and only happen when not done before
         
         QpUs = []
         child_nodes = self.prev_node.child_nodes
-        Ns = (child_node.action.N for child_node in child_nodes)
+        Ns = [child_node.action.N for child_node in child_nodes]
+        P,v = self.model.predict(child_nodes[0].action.pred_states)
         for child_node in child_nodes:
-            QpU = child_node.action.evaluate(self.model,np.sum(Ns)) 
+            QpU = child_node.action.evaluate(P,np.sum(Ns)) 
             QpUs.append(QpU)
-            next_node = child_nodes[np.argmax(QpUs)]
+        next_node = child_nodes[np.argmax(QpUs)]
         self.prev_node = next_node
+        print('Action Calculated')
+        print(self.prev_node.board)
         v = self.simulate()
         
         next_node.action.Q = (next_node.action.N*next_node.action.Q +v)/(next_node.action.N+1)
         next_node.action.N += 1
+        print('Visits Corrected')
         return -v
     
     def run_simulations(self,simulations = 100):   
         for _ in range(simulations):
-            #print('EPISODE: '+str(_))
+            print('EPISODE: '+str(_))
             self.simulate()
-            self.prev_node = self.root_node
         first_gen = self.root_node.child_nodes
         Ns = [node.action.N for node in first_gen]
         self.policy = [N/np.sum(Ns) for N in Ns]
