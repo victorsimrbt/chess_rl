@@ -118,7 +118,7 @@ class MonteCarloTree():
     
     def run_simulations(self,simulations = 100):   
         for _ in range(simulations):
-            print('EPISODE: '+str(_))
+            #print('EPISODE: '+str(_))
             self.simulate()
         clear_output()
         first_gen = self.root_node.child_nodes
