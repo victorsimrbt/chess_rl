@@ -1,6 +1,5 @@
 import chess
 import tensorflow as tf
-from variable_settings import *
 from board_conversion import *
 from q_network import *
 from rewards import * 
@@ -28,7 +27,7 @@ class ChessEnv():
         self.move_counter = 1
         self.fast_counter = 0
         self.pgn = ''
-        if len(self.X) > max_memory_length:
+        if len(self.X) > 10000:
             del self.X[:1]
             del self.y[:1]
 
@@ -68,8 +67,7 @@ class ChessEnv():
         
         while True:
             move_counter += 1
-            if move_counter % 10:
-                print('Move:',str(move_counter))
+            print('Move:',str(move_counter))
             self.positions = self.positions[-8:]
             self.positions.append(self.board)
             self.tree = MonteCarloTree(model,self.board,self.positions)

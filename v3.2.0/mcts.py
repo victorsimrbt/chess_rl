@@ -2,6 +2,8 @@ import chess
 import numpy as np
 from IPython.display import clear_output
 from board_conversion import *
+import keras.backend as K
+import gc
 
 c_puct = 4
 
@@ -76,6 +78,7 @@ class MonteCarloTree():
             node = Node(position,None,[])
             root_parents.append(node)
         root_node = Node(board,None,root_parents)
+        del root_parents
         self.root_node = root_node
         
     def simulate(self):
@@ -102,7 +105,8 @@ class MonteCarloTree():
         QpUs = []
         child_nodes = self.prev_node.child_nodes
         Ns = [child_node.action.N for child_node in child_nodes]
-        P,v = self.model.predict(child_nodes[0].action.pred_states)
+        P,v = self.model(child_nodes[0].action.pred_states)
+
         for child_node in child_nodes:
             QpU = child_node.action.evaluate(P,np.sum(Ns)) 
             QpUs.append(QpU)
@@ -110,6 +114,9 @@ class MonteCarloTree():
         self.prev_node = next_node
         #print('Action Calculated')
         v = self.simulate()
+        
+        del Ns
+        del QpUs
         
         next_node.action.Q = (next_node.action.N*next_node.action.Q +v)/(next_node.action.N+1)
         next_node.action.N += 1
@@ -120,6 +127,7 @@ class MonteCarloTree():
         for _ in range(simulations):
             #print('EPISODE: '+str(_))
             self.simulate()
+            gc.collect()
         clear_output()
         first_gen = self.root_node.child_nodes
         Ns = [node.action.N for node in first_gen]
