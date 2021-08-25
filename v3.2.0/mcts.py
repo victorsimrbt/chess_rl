@@ -104,7 +104,7 @@ class MonteCarloTree():
         QpUs = []
         child_nodes = self.prev_node.child_nodes
         Ns = [child_node.action.N for child_node in child_nodes]
-        P,v = self.model(child_nodes[0].action.pred_states)
+        P,v = self.model.predict(child_nodes[0].action.pred_states)
 
         for child_node in child_nodes:
             QpU = child_node.action.evaluate(P,np.sum(Ns)) 
