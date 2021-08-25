@@ -6,11 +6,6 @@ from keras.layers import add, BatchNormalization, Flatten
 from keras.losses import CategoricalCrossentropy,MeanSquaredError
 import tensorflow as tf
 from board_conversion import *
-from keras.utils.generic_utils import get_custom_objects
-from keras.optimizers import Adam
-
-optimizer = Adam(learning_rate=0.00025, clipnorm=1.0)
-# ! HIGH RAM USAGE IS DUE TO NODES IN TENSORFLOW BUILDING UP BY TRAINING. KERAS.CLEAR AFTER TRAINING AND DURING EPISODE EXECUTION
 class Q_model():
     def __init__(self,model = None):
         if model:
@@ -46,7 +41,7 @@ class Q_model():
 
         model = Model(inputs=visible, outputs=[p,v])
         
-        model.compile(optimizer = optimizer, loss = {'p':CategoricalCrossentropy(),
+        model.compile(optimizer = 'adam', loss = {'p':CategoricalCrossentropy(),
                                                      'v':MeanSquaredError()})
         return model
     

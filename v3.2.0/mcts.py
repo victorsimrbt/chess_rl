@@ -2,7 +2,6 @@ import chess
 import numpy as np
 from IPython.display import clear_output
 from board_conversion import *
-import keras.backend as K
 import gc
 
 c_puct = 4
