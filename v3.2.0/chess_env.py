@@ -5,6 +5,7 @@ from q_network import *
 from rewards import * 
 from mcts import *
 from numpy.random import choice
+import gc
 class ChessEnv():
     def __init__(self):
         self.board = chess.Board()
@@ -93,6 +94,7 @@ class ChessEnv():
                     v_replacements[True] = int_result[0]
                     v_replacements[False] = int_result[1]
                 break
+            gc.collect()
         
         episode_y_v = [v_replacements[boolean] for boolean in episode_y_v]
         

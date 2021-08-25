@@ -126,7 +126,6 @@ class MonteCarloTree():
         for _ in range(simulations):
             #print('EPISODE: '+str(_))
             self.simulate()
-            gc.collect()
         clear_output()
         first_gen = self.root_node.child_nodes
         Ns = [node.action.N for node in first_gen]
