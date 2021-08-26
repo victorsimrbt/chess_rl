@@ -118,7 +118,6 @@ class MonteCarloTree():
         del Ns
         del QpUs
         del P
-        del self.chain
         #print('Visits Corrected')
         return -v
     
