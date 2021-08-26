@@ -32,7 +32,7 @@ class Action():
         # ! IF NOT CONVERGE COULD BE CAUSE! DATA IMBALANCE.
     def evaluate(self,P,v,Ns):
         P = P[0][self.move_idx]
-        self.v = v[0][self.move_idx]
+        self.v = v[self.move_idx]
         U = c_puct * P * (np.sqrt(Ns)/(1+ self.N))
         QpU = U + self.Q
         return QpU
@@ -112,11 +112,12 @@ class MonteCarloTree():
         #print('Action Calculated')
         v = self.simulate()
         
-        del Ns
-        del QpUs
-        
         next_node.action.Q = (next_node.action.N*next_node.action.Q +v)/(next_node.action.N+1)
         next_node.action.N += 1
+        
+        del Ns
+        del QpUs
+        del P,v
         #print('Visits Corrected')
         return -v
     
