@@ -19,8 +19,6 @@ class Action():
         self.N = 0
         self.W = 0
         self.Q = 0
-        self.P = 0
-        self.U = 0
         self.V = 0
         self.state = state
         if move:
@@ -32,10 +30,11 @@ class Action():
             
         self.pred_states = self.pred_states[:8]
         # ! IF NOT CONVERGE COULD BE CAUSE! DATA IMBALANCE.
-    def evaluate(self,P,Ns):
-        self.P = P[0][self.move_idx]
-        self.U = c_puct * self.P * (np.sqrt(Ns)/(1+ self.N))
-        QpU = self.U + self.Q 
+    def evaluate(self,P,v,Ns):
+        P = P[0][self.move_idx]
+        self.v = v[0][self.move_idx]
+        U = c_puct * P * (np.sqrt(Ns)/(1+ self.N))
+        QpU = U + self.Q
         return QpU
 
 class Node:
@@ -65,7 +64,6 @@ def evaluate_reward(board):
 class MonteCarloTree():
     def __init__(self,model,board,parents):
         self.create_root_node(board,parents)
-        self.nodes = []
         self.prev_node = self.root_node
         self.chain = []
         self.model = model
@@ -90,6 +88,7 @@ class MonteCarloTree():
                 node.action.N += 1 
                 node.action.W += reward
                 node.action.Q = node.action.W/node.action.N
+            self.chain = []
             self.prev_node = self.root_node
             return evaluate_reward(self.prev_node.board)   
         
@@ -106,7 +105,7 @@ class MonteCarloTree():
         P,v = self.model.predict(child_nodes[0].action.pred_states)
 
         for child_node in child_nodes:
-            QpU = child_node.action.evaluate(P,np.sum(Ns)) 
+            QpU = child_node.action.evaluate(P,v,np.sum(Ns)) 
             QpUs.append(QpU)
         next_node = child_nodes[np.argmax(QpUs)]
         self.prev_node = next_node

@@ -53,8 +53,6 @@ class ChessEnv():
             return 0
         
     def execute_episode(self,model,simulations = 100):
-        episode_X = []
-        episode_y_p = []
         episode_y_v = []
         v_replacements = {
             True : 0,
@@ -70,9 +68,9 @@ class ChessEnv():
             self.tree = MonteCarloTree(model,self.board,self.positions)
             
             self.tree.run_simulations(simulations = simulations)
-            episode_X.append(generate_input(self.positions)) 
+            self.X.append(generate_input(self.positions)) 
             data_policy = convert_policy(self.board,self.tree.policy)
-            episode_y_p.append(data_policy)
+            self.y_p.append(data_policy)
             episode_y_v.append(self.board.turn)
             
             a = choice(len(self.tree.policy), p=self.tree.policy)
@@ -90,15 +88,14 @@ class ChessEnv():
                     v_replacements[True] = int_result[0]
                     v_replacements[False] = int_result[1]
                 break
+            
+            del data_policy
+            del a
+            del move
         
         episode_y_v = [v_replacements[boolean] for boolean in episode_y_v]
-        
-        self.X += episode_X
-        self.y_p += episode_y_p
         self.y_v += episode_y_v
         
-        del episode_X
-        del episode_y_p
         del episode_y_v
         del v_replacements
         
