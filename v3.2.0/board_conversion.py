@@ -42,7 +42,6 @@ for side in sides:
                 promo_moves.append(move)
                 
 # ! Replace num2move as list and remove move2num
-
 num2move = []
 
 counter = 0
@@ -136,3 +135,5 @@ def convert_policy(board,policy):
         num = num2move.index(move)
         new_policy[num] = policy[i]
     return new_policy
+del promo_moves
+del ucis

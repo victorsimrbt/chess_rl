@@ -65,15 +65,15 @@ class ChessEnv():
 
             self.positions = self.positions[-8:]
             self.positions.append(self.board)
-            self.tree = MonteCarloTree(model,self.board,self.positions)
+            tree = MonteCarloTree(model,self.board,self.positions)
             
-            self.tree.run_simulations(simulations = simulations)
+            tree.run_simulations(simulations = simulations)
             self.X.append(generate_input(self.positions)) 
-            data_policy = convert_policy(self.board,self.tree.policy)
+            data_policy = convert_policy(self.board,tree.policy)
             self.y_p.append(data_policy)
             episode_y_v.append(self.board.turn)
             
-            a = choice(len(self.tree.policy), p=self.tree.policy)
+            a = choice(len(tree.policy), p=tree.policy)
             move = list(self.board.legal_moves)[a]# sample action from improved policy
             self.step(move)
             
@@ -92,13 +92,13 @@ class ChessEnv():
             del data_policy
             del a
             del move
+            del tree
         
         episode_y_v = [v_replacements[boolean] for boolean in episode_y_v]
         self.y_v += episode_y_v
         
         del episode_y_v
         del v_replacements
-        
         return self.board.result()
     
     def train_model(self,q_model,epochs = 100):

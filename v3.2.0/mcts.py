@@ -1,7 +1,5 @@
-import chess
 import numpy as np
 from board_conversion import *
-import gc
 
 c_puct = 4
 
@@ -30,6 +28,7 @@ class Action():
             
         self.pred_states = self.pred_states[:8]
         # ! IF NOT CONVERGE COULD BE CAUSE! DATA IMBALANCE.
+        
     def evaluate(self,P,v,Ns):
         P = P[0][self.move_idx]
         self.v = v
@@ -119,6 +118,7 @@ class MonteCarloTree():
         del Ns
         del QpUs
         del P
+        del self.chain
         #print('Visits Corrected')
         return -v
     
