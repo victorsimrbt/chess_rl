@@ -1,6 +1,5 @@
 import chess
 import numpy as np
-from IPython.display import clear_output
 from board_conversion import *
 import gc
 
@@ -126,7 +125,6 @@ class MonteCarloTree():
         for _ in range(simulations):
             #print('EPISODE: '+str(_))
             self.simulate()
-        clear_output()
         first_gen = self.root_node.child_nodes
         Ns = [node.action.N for node in first_gen]
         self.policy = [N/np.sum(Ns) for N in Ns]

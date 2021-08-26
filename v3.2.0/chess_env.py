@@ -28,11 +28,7 @@ class ChessEnv():
         self.move_counter = 1
         self.fast_counter = 0
         self.pgn = ''
-        if len(self.X) > 10000:
-            del self.X[:1]
-            del self.y[:1]
-
-        if len(self.pgns) > 1000:
+        if len(self.pgns) > 100:
           self.pgns.pop(-1)
         return translate_board(self.board)
 
@@ -68,7 +64,7 @@ class ChessEnv():
         
         while True:
             move_counter += 1
-            print('Move:',str(move_counter))
+
             self.positions = self.positions[-8:]
             self.positions.append(self.board)
             self.tree = MonteCarloTree(model,self.board,self.positions)
@@ -94,7 +90,6 @@ class ChessEnv():
                     v_replacements[True] = int_result[0]
                     v_replacements[False] = int_result[1]
                 break
-            gc.collect()
         
         episode_y_v = [v_replacements[boolean] for boolean in episode_y_v]
         
@@ -102,7 +97,12 @@ class ChessEnv():
         self.y_p += episode_y_p
         self.y_v += episode_y_v
         
-        self.board.result()
+        del episode_X
+        del episode_y_p
+        del episode_y_v
+        del v_replacements
+        
+        return self.board.result()
     
     def train_model(self,q_model,epochs = 100):
         rep_model = q_model
