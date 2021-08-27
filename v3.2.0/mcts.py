@@ -87,6 +87,7 @@ class MonteCarloTree():
                 node.action.N += 1 
                 node.action.W += reward
                 node.action.Q = node.action.W/node.action.N
+                del node
             self.chain = []
             self.prev_node = self.root_node
             return evaluate_reward(self.prev_node.board)   
@@ -106,6 +107,7 @@ class MonteCarloTree():
         for child_node in child_nodes:
             QpU = child_node.action.evaluate(P,v,np.sum(Ns)) 
             QpUs.append(QpU)
+            
         next_node = child_nodes[np.argmax(QpUs)]
         self.prev_node = next_node
         #print('Action Calculated')
@@ -114,7 +116,8 @@ class MonteCarloTree():
         for node in self.chain:
             node.action.Q = (node.action.N*node.action.Q +v)/(node.action.N+1)
             node.action.N += 1
-        
+            del node
+            
         del Ns
         del QpUs
         del P
