@@ -13,6 +13,7 @@ def pos_cont(board):
     return boards,legal_moves
 
 class Action():
+    __slots__ = ["N","W","Q","V","state","pred_states"]
     def __init__(self,state,move,parent_nodes):
         self.N = 0
         self.W = 0
@@ -31,12 +32,13 @@ class Action():
         
     def evaluate(self,P,v,Ns):
         P = P[0][self.move_idx]
-        self.v = v
+        self.V = v
         U = c_puct * P * (np.sqrt(Ns)/(1+ self.N))
         QpU = U + self.Q
         return QpU
 
 class Node:
+    __slots__ = ["board","move","child_nodes","parents","states","action"]
     def __init__(self,board,move,parents):
         self.board = board
         self.move = move
@@ -44,7 +46,6 @@ class Node:
         self.parents = parents
         self.states = np.append(np.array(parents),self) 
         self.action = Action(self.board,self.move,self.states)
-        self.visit_count = 0
             
     def extend(self):
         if not(self.child_nodes):
@@ -61,6 +62,7 @@ def evaluate_reward(board):
         return -1
 
 class MonteCarloTree():
+    __slots__ = ["prev_node","chain","root_node"]
     def __init__(self,model,board,parents):
         self.create_root_node(board,parents)
         self.prev_node = self.root_node
@@ -130,7 +132,6 @@ class MonteCarloTree():
             self.simulate()
         first_gen = self.root_node.child_nodes
         Ns = [node.action.N for node in first_gen]
-        self.policy = [N/np.sum(Ns) for N in Ns]
-        top_node = first_gen[np.argmax(self.policy)]
-        self.move = top_node.move
+        policy = [N/np.sum(Ns) for N in Ns]
+        return policy
         

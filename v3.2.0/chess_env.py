@@ -1,12 +1,14 @@
 import chess
-import tensorflow as tf
 from board_conversion import *
 from q_network import *
 from rewards import * 
 from mcts import *
 from numpy.random import choice
-import gc
 class ChessEnv():
+    __slots__ = ["board","X","y_p","y_v",
+                 "positions","loss_history",
+                 "move_counter","fast_counter",
+                 "pgn","pgns"]
     def __init__(self):
         self.board = chess.Board()
         self.X = []
@@ -67,9 +69,9 @@ class ChessEnv():
             self.positions.append(self.board)
             tree = MonteCarloTree(model,self.board,self.positions)
             
-            tree.run_simulations(simulations = simulations)
+            policy = tree.run_simulations(simulations = simulations)
             self.X.append(generate_input(self.positions)) 
-            data_policy = convert_policy(self.board,tree.policy)
+            data_policy = convert_policy(self.board,policy)
             self.y_p.append(data_policy)
             episode_y_v.append(self.board.turn)
             
