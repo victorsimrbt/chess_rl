@@ -62,7 +62,7 @@ def evaluate_reward(board):
         return -1
 
 class MonteCarloTree():
-    __slots__ = ["prev_node","chain","root_node"]
+    __slots__ = ["prev_node","chain","root_node","model"]
     def __init__(self,model,board,parents):
         self.create_root_node(board,parents)
         self.prev_node = self.root_node
