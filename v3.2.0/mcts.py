@@ -13,15 +13,14 @@ def pos_cont(board):
     return boards,legal_moves
 
 class Action():
-    __slots__ = ["N","W","Q","V","state","pred_states"]
-    def __init__(self,state,move,parent_nodes):
+    __slots__ = ["N","W","Q","V","state","move_idx","pred_states"]
+    def __init__(self,state,move_idx,parent_nodes):
         self.N = 0
         self.W = 0
         self.Q = 0
         self.V = 0
         self.state = state
-        if move:
-            self.move_idx = num2move.index(move)
+        self.move_idx = move_idx
         
         self.pred_states = []
         for parent_node in parent_nodes:
@@ -41,7 +40,10 @@ class Node:
     __slots__ = ["board","move","child_nodes","parents","states","action"]
     def __init__(self,board,move,parents):
         self.board = board
-        self.move = move
+        if move:
+            self.move = num2move.index(move)
+        else:
+            self.move = None
         self.child_nodes = []
         self.parents = parents
         self.states = np.append(np.array(parents),self) 
@@ -54,6 +56,9 @@ class Node:
             new_parents.append(self)
             for i in range(len(continuations)):
                 self.child_nodes.append(Node(continuations[i],legal_moves[i],new_parents))
+            
+            del legal_moves
+            del new_parents
             
 def evaluate_reward(board):
     if board.is_checkmate():
@@ -72,9 +77,9 @@ class MonteCarloTree():
     def create_root_node(self,board,parents):
         root_parents = []
         for position in parents:
-            node = Node(position,None,[])
+            node = Node(position,num2move[0],[])
             root_parents.append(node)
-        root_node = Node(board,None,root_parents)
+        root_node = Node(board,num2move[0],root_parents)
         del root_parents
         self.root_node = root_node
         
@@ -133,5 +138,6 @@ class MonteCarloTree():
         first_gen = self.root_node.child_nodes
         Ns = [node.action.N for node in first_gen]
         policy = [N/np.sum(Ns) for N in Ns]
+        del Ns
         return policy
         

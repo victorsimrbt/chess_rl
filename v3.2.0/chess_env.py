@@ -8,7 +8,7 @@ class ChessEnv():
     __slots__ = ["board","X","y_p","y_v",
                  "positions","loss_history",
                  "move_counter","fast_counter",
-                 "pgn","pgns"]
+                 "pgn","pgns","outcome"]
     def __init__(self):
         self.board = chess.Board()
         self.X = []
@@ -75,7 +75,7 @@ class ChessEnv():
             self.y_p.append(data_policy)
             episode_y_v.append(self.board.turn)
             
-            a = choice(len(tree.policy), p=tree.policy)
+            a = choice(len(policy), p=policy)
             move = list(self.board.legal_moves)[a]# sample action from improved policy
             self.step(move)
             
