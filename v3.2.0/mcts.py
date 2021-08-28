@@ -9,6 +9,7 @@ def pos_cont(board):
     for move in legal_moves:
         copy_board = board.copy()
         copy_board.push(move)
+        copy_board.move_stack = []
         boards.append(copy_board)
     return boards,legal_moves
 

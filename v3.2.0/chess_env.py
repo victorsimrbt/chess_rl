@@ -63,6 +63,17 @@ class ChessEnv():
         move_counter = 0
         
         while True:
+            if self.board.is_game_over():
+                self.outcome = self.board.result()
+                results = np.array(self.outcome.split('-'))
+                if '1/2' in results:
+                    v_replacements[True] = 0.5
+                    v_replacements[False] = 0.5
+                else:
+                    int_result = results.astype(int)
+                    v_replacements[True] = int_result[0]
+                    v_replacements[False] = int_result[1]
+                break
             move_counter += 1
 
             self.positions = self.positions[-8:]
@@ -78,18 +89,6 @@ class ChessEnv():
             a = choice(len(policy), p=policy)
             move = list(self.board.legal_moves)[a]# sample action from improved policy
             self.step(move)
-            
-            if self.board.is_game_over():
-                self.outcome = self.board.result()
-                results = np.array(self.outcome.split('-'))
-                if '1/2' in results:
-                    v_replacements[True] = 0.5
-                    v_replacements[False] = 0.5
-                else:
-                    int_result = results.astype(int)
-                    v_replacements[True] = int_result[0]
-                    v_replacements[False] = int_result[1]
-                break
             
             del data_policy
             del a
