@@ -41,6 +41,7 @@ class Node:
     __slots__ = ["board","move","child_nodes","parents","states","action"]
     def __init__(self,board,move,parents):
         self.board = board
+        self.board.__dict__['_stack'] = []
         if move:
             self.move = num2move.index(move)
         else:

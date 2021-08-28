@@ -76,8 +76,8 @@ class ChessEnv():
                 break
             move_counter += 1
 
-            self.positions = self.positions[-8:]
             self.positions.append(self.board)
+            self.positions = self.positions[-8:]
             tree = MonteCarloTree(model,self.board,self.positions)
             
             policy = tree.run_simulations(simulations = simulations)
