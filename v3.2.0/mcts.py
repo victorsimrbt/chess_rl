@@ -1,6 +1,6 @@
 import numpy as np
 from board_conversion import *
-
+# ! Remove The Move Stacks from Each Board to Reduce total number of moves
 c_puct = 4
 
 def pos_cont(board):
@@ -52,6 +52,7 @@ class Node:
     def extend(self):
         if not(self.child_nodes):
             continuations,legal_moves = pos_cont(self.board)
+            self.board.move_stack = []
             new_parents = self.parents
             new_parents.append(self)
             for i in range(len(continuations)):
