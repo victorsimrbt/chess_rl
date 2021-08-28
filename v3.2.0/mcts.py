@@ -8,6 +8,7 @@ def pos_cont(board):
     legal_moves = list(board.legal_moves)
     for move in legal_moves:
         copy_board = board.copy()
+        copy_board.__dict__['_stack'] = []
         copy_board.push(move)
         copy_board.move_stack = []
         boards.append(copy_board)
@@ -21,9 +22,10 @@ class Action():
         self.Q = 0
         self.V = 0
         self.state = state
+        self.state.__dict__['_stack'] = []
         self.move_idx = move_idx
         
-        self.pred_states = []
+        self.pred_states = [self.state]
         for parent_node in parent_nodes:
             self.pred_states.append(parent_node.board)
             
@@ -97,7 +99,6 @@ class MonteCarloTree():
                 node.action.N += 1 
                 node.action.W += reward
                 node.action.Q = node.action.W/node.action.N
-                del node
             self.chain = []
             self.prev_node = self.root_node
             return evaluate_reward(self.prev_node.board)   
