@@ -63,6 +63,8 @@ class ChessEnv():
         move_counter = 0
         
         while True:
+            if move_counter % 100:
+                print('Move:',str(move_counter))
             if self.board.is_game_over():
                 self.outcome = self.board.result()
                 results = np.array(self.outcome.split('-'))
