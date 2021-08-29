@@ -4,6 +4,7 @@ from q_network import *
 from rewards import * 
 from mcts import *
 from numpy.random import choice
+from IPython.display import clear_output
 class ChessEnv():
     __slots__ = ["board","X","y_p","y_v",
                  "positions","loss_history",
@@ -63,8 +64,7 @@ class ChessEnv():
         move_counter = 0
         
         while True:
-            if move_counter % 100:
-                print('Move:',str(move_counter))
+            print('Move:',move_counter)
             if self.board.is_game_over():
                 self.outcome = self.board.result()
                 results = np.array(self.outcome.split('-'))
@@ -96,6 +96,7 @@ class ChessEnv():
             del a
             del move
             del tree
+        clear_output()
         
         episode_y_v = [v_replacements[boolean] for boolean in episode_y_v]
         self.y_v += episode_y_v
