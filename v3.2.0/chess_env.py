@@ -63,7 +63,7 @@ class ChessEnv():
         }
         move_counter = 0
         
-        while True:
+        while True and move_counter > 160:
             print('Move:',move_counter)
             if self.board.is_game_over():
                 self.outcome = self.board.result()
