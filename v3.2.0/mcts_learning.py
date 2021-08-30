@@ -10,7 +10,7 @@ q_model = Q_model()
 examples = []
 
 for i in range(100):
-    outcome = env.execute_episode(q_model)
+    outcome = env.execute_episode(q_model,simulations = 10)
     q_model = env.train_model(q_model)
     print('Episode:',str(i),
           'Loss:',env.loss_history[-1],

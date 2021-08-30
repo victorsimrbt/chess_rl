@@ -1,7 +1,7 @@
 import numpy as np
 from board_conversion import *
 # ! Remove The Move Stacks from Each Board to Reduce total number of moves
-c_puct = 4
+c_puct = 10
 
 def pos_cont(board):
     boards = []
@@ -101,6 +101,7 @@ class MonteCarloTree():
                 node.action.Q = node.action.W/node.action.N
             self.chain = []
             self.prev_node = self.root_node
+            print('termin')
             return evaluate_reward(self.prev_node.board)   
         
         if not(self.prev_node.child_nodes):
@@ -114,12 +115,14 @@ class MonteCarloTree():
         child_nodes = self.prev_node.child_nodes
         Ns = [child_node.action.N for child_node in child_nodes]
         P,v = self.model.predict(child_nodes[0].action.pred_states)
-
+        P = P.numpy()
         for child_node in child_nodes:
             QpU = child_node.action.evaluate(P,v,np.sum(Ns)) 
             QpUs.append(QpU)
-            
-        next_node = child_nodes[np.argmax(QpUs)]
+        
+        next_node = child_nodes[np.random.choice(np.where(QpUs == max(QpUs))[0])]
+        next_node.action.N += 1
+        Ns = [child_node.action.N for child_node in child_nodes]
         self.prev_node = next_node
         #print('Action Calculated')
         v = self.simulate()
@@ -141,6 +144,7 @@ class MonteCarloTree():
             self.simulate()
         first_gen = self.root_node.child_nodes
         Ns = [node.action.N for node in first_gen]
+        print("NS",Ns)
         policy = [N/np.sum(Ns) for N in Ns]
         del Ns
         return policy
