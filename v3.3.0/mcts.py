@@ -33,7 +33,7 @@ class Action():
             self.pred_states.append(parent_node.board)
 
         self.pred_states = self.pred_states[:8]
-        # ! CLEAR PRED STATES
+        # ! IF NOT CONVERGE COULD BE CAUSE! DATA IMBALANCE.
 
     def evaluate(self, P, v, Ns):
         P = P[0][self.move_idx]
@@ -71,8 +71,6 @@ class Node:
             del legal_moves
             del new_parents
 
-            # ! Destroy child nodes after use
-
 
 def evaluate_reward(board):
     if board.is_checkmate():
@@ -82,14 +80,13 @@ def evaluate_reward(board):
 
 
 class MonteCarloTree():
-    __slots__ = ["prev_node", "chain", "root_node", "model","sims"]
+    __slots__ = ["prev_node", "chain", "root_node", "model"]
 
     def __init__(self, model, board, parents):
         self.create_root_node(board, parents)
         self.prev_node = self.root_node
         self.chain = []
         self.model = model
-        self.sims = 0
 
     def create_root_node(self, board, parents):
         root_parents = []
@@ -97,7 +94,6 @@ class MonteCarloTree():
             node = Node(position, num2move[0], [])
             root_parents.append(node)
         root_node = Node(board, num2move[0], root_parents)
-        print('Init Root Node')
         del root_parents
         self.root_node = root_node
 
@@ -114,7 +110,7 @@ class MonteCarloTree():
                 node.action.Q = node.action.W/node.action.N
             self.chain = []
             self.prev_node = self.root_node
-            #print('termin')
+            print('termin')
             return evaluate_reward(self.prev_node.board)
 
         if not(self.prev_node.child_nodes):
@@ -156,7 +152,6 @@ class MonteCarloTree():
         for _ in range(simulations):
             #print('EPISODE: '+str(_))
             self.simulate()
-            self.sims += 1
         first_gen = self.root_node.child_nodes
         Ns = [node.action.N for node in first_gen]
         print("NS", Ns)
