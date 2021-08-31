@@ -72,6 +72,14 @@ class Node:
             del new_parents
 
             # ! Destroy child nodes after use
+    def clear(self):
+        for node in self.child_nodes:
+            node.clear()
+        self.child_nodes = []
+        self.action = None
+        self.parents = []
+        self.states = []
+        
 
 
 def evaluate_reward(board):
@@ -97,7 +105,7 @@ class MonteCarloTree():
             node = Node(position, num2move[0], [])
             root_parents.append(node)
         root_node = Node(board, num2move[0], root_parents)
-        print('Init Root Node')
+        #print('Init Root Node')
         del root_parents
         self.root_node = root_node
 
@@ -159,7 +167,7 @@ class MonteCarloTree():
             self.sims += 1
         first_gen = self.root_node.child_nodes
         Ns = [node.action.N for node in first_gen]
-        print("NS", Ns)
+        self.root_node.clear()
         policy = [N/np.sum(Ns) for N in Ns]
         del Ns
         return policy

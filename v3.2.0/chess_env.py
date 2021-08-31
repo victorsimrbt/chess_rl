@@ -5,7 +5,6 @@ from numpy.random import choice
 from board_conversion import *
 from mcts import *
 from q_network import *
-from rewards import *
 
 
 class ChessEnv():
@@ -94,11 +93,6 @@ class ChessEnv():
             # sample action from improved policy
             move = list(self.board.legal_moves)[a]
             self.step(move)
-
-            del data_policy
-            del a
-            del move
-            del tree
         clear_output()
 
         episode_y_v = [v_replacements[boolean] for boolean in episode_y_v]
