@@ -1,7 +1,7 @@
 import numpy as np
 from board_conversion import *
 # ! Remove The Move Stacks from Each Board to Reduce total number of moves
-c_puct = 10
+c_puct = 1
 c_puct_decay_rate = 0.00001
 
 def pos_cont(board):
