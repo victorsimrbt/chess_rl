@@ -16,8 +16,8 @@ class ChessEnv():
     def __init__(self):
         self.board = chess.Board()
         self.X = []
-        self.y_p = []
-        self.y_v = []
+        self.y_p = [] 
+        self.y_v = [] 
         self.positions = []
         self.loss_history = []
         self.move_counter = 1
