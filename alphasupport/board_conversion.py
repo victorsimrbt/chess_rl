@@ -77,9 +77,9 @@ def generate_input(positions, len_positions=8):
 
     while len(board_rep) < len_positions*2 + 1:
         value = np.zeros((8, 8, 12))
-        board_rep.insert(0, value)
+        board_rep.insert(-1, value)
     board_rep = np.array(board_rep)
-    board_rep = board_rep[-17:]
+    board_rep = board_rep[-17:] 
     return board_rep
 
 

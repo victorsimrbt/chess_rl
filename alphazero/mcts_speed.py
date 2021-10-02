@@ -2,7 +2,7 @@ import numpy as np
 from board_conversion import *
 import time
 # ! Remove The Move Stacks from Each Board to Reduce total number of moves
-c_puct = 10
+c_puct = 5
 QpU_time = []
 Qup_time = []
 
