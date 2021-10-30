@@ -3,6 +3,7 @@ from board_conversion import *
 # ! Remove The Move Stacks from Each Board to Reduce total number of moves
 c_puct = 10
 c_puct_decay_rate = 0.00001
+capture_weight = 1.1
 
 def pos_cont(board):
     boards = []
@@ -38,9 +39,10 @@ class Action():
     def evaluate(self, P, v, Ns):
         P = P[0][self.move_idx]
         self.V = v
-        U = c_puct * P * (np.sqrt(Ns)/(1 + self.N))
-        QpU = U + self.Q
-        return QpU  
+        U = self.Q + c_puct * P * (np.sqrt(Ns)/(1 + self.N))
+        if self.state.is_capture(num2move[self.move_idx]):
+            U *= capture_weight
+        return U  
 
 
 class Node:
@@ -122,27 +124,26 @@ class MonteCarloTree():
                 node.action.Q = node.action.W/node.action.N
             self.chain = []
             self.prev_node = self.root_node
-            #print('termin')
             return evaluate_reward(self.prev_node.board)
 
         if not(self.prev_node.child_nodes):
             self.prev_node.extend()
-            #print('Leaf Node Reached')
             self.prev_node.action.N += 1
             return -self.prev_node.action.V
-        # ? Extend and only happen when not done before
+        
+        # ? Extend only happens when not done before
 
-        QpUs = []
+        Us = []
         child_nodes = self.prev_node.child_nodes
         Ns = [child_node.action.N for child_node in child_nodes]
         P, v = self.model.predict(child_nodes[0].action.pred_states)
         P = P.numpy()
         for child_node in child_nodes:
-            QpU = child_node.action.evaluate(P, v, np.sum(Ns))
-            QpUs.append(QpU)
+            U = child_node.action.evaluate(P, v, np.sum(Ns))
+            Us.append(U)
 
         next_node = child_nodes[np.random.choice(
-            np.where(QpUs == max(QpUs))[0])]
+            np.where(Us == max(Us))[0])]
         next_node.action.N += 1
         Ns = [child_node.action.N for child_node in child_nodes]
         self.prev_node = next_node
@@ -155,7 +156,7 @@ class MonteCarloTree():
             del node
 
         del Ns
-        del QpUs
+        del Us
         del P
         #print('Visits Corrected')
         return -v
