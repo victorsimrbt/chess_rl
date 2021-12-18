@@ -91,7 +91,6 @@ def generate_input(positions, len_positions=8):
     board_rep.append(turn)
 
     while len(board_rep) < len_positions*2 + 1:
-        print("Supplement")
         value = np.zeros((8, 8))
         board_rep.insert(-1, value)
     board_rep = np.array(board_rep)
