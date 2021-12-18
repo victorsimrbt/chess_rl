@@ -106,7 +106,7 @@ class ChessEnv():
     def train_model(self, q_model, epochs=100):
         rep_model = q_model
         print('Training Model...')
-        X = np.array(self.X).reshape(len(self.X), 17, 8, 8, 12)
+        X = np.array(self.X).reshape(len(self.X), 17, 8, 8)
         y_p = np.array(self.y_p)
         y_v = np.array(self.y_v).reshape(len(self.y_v), 1)
         print(X.shape, y_p.shape, y_v.shape)
