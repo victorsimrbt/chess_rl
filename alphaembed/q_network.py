@@ -31,7 +31,7 @@ class Q_model():
 
         visible = Input(shape=(17, 8, 8))
         embedding =  Embedding(13,64)(visible)
-        layer1 = residual_module(visible, 64)
+        layer1 = residual_module(embedding, 64)
         maxpool1 = MaxPooling2D()(layer1)
         layer2 = residual_module(maxpool1, 128)
         maxpool2 = MaxPooling2D()(layer2)
