@@ -40,8 +40,6 @@ class Action():
         P = P[0][self.move_idx]
         self.V = v
         U = self.Q + c_puct * P * (np.sqrt(Ns)/(1 + self.N))
-        if self.state.is_capture(num2move[self.move_idx]):
-            U *= capture_weight
         return U  
 
 

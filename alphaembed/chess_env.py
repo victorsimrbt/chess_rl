@@ -56,7 +56,7 @@ class ChessEnv():
         else:
             return 0
 
-    def execute_episode(self, model, simulations=100):
+    def execute_episode(self, model, simulations=100, preserve_positions = False):
         global c_puct
         episode_y_v = []
         v_replacements = {
@@ -81,7 +81,8 @@ class ChessEnv():
             move_counter += 1
 
             self.positions.append(self.board.copy())
-            self.positions = self.positions[-8:]
+            if not(preserve_positions):
+                self.positions = self.positions[-8:]
             tree = MonteCarloTree(model, self.board, self.positions)
 
             policy = tree.run_simulations(simulations=simulations)
